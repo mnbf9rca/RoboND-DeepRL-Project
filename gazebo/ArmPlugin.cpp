@@ -653,14 +653,15 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 			if( episodeFrames > 1 )
 			{
 				const float distDelta  = lastGoalDistance - distGoal;
+				const float timePenalty = (episodeFrames * DISTANCE_EPISIDE_PENALTY);
 
 
 				// compute the smoothed moving average of the delta of the distance to the goal
 				avgGoalDelta  = (avgGoalDelta * DISTANCE_DECAY_FACTOR) + (distDelta * (1.0f - DISTANCE_DECAY_FACTOR));
-				rewardHistory = avgGoalDelta * REWARD_DISTANCE - (episodeFrames * DISTANCE_EPISIDE_PENALTY);
+				rewardHistory = avgGoalDelta * REWARD_DISTANCE * timePenalty;
 
 				newReward     = true;	
-				if(true){printf("distance('%s', '%s') = %f, reward %f at %f avgGoalDelta\n", gripper->GetName().c_str(), prop->model->GetName().c_str(), distGoal, rewardHistory, avgGoalDelta);}
+				if(true){printf("distance('%s', '%s') = %f, r %f at %f/%f\n", gripper->GetName().c_str(), prop->model->GetName().c_str(), distGoal, rewardHistory, avgGoalDelta, timePenalty);}
 			}
 
 			lastGoalDistance = distGoal;
