@@ -146,10 +146,10 @@ void ArmPlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr /*_sdf*/)
 	/
 	*/
 	//collisionSub = None;
-	collisionSub = collisionNode->Subscribe("/gazebo/arm_world/tube/tube_link/my_contact", &ArmPlugin::onCollisionMsg, this)
+	collisionSub = collisionNode->Subscribe("/gazebo/arm_world/tube/tube_link/my_contact", &ArmPlugin::onCollisionMsg, this);
 
-				   // Listen to the update event. This event is broadcast every simulation iteration.
-				   this->updateConnection = event::Events::ConnectWorldUpdateBegin(boost::bind(&ArmPlugin::OnUpdate, this, _1));
+	// Listen to the update event. This event is broadcast every simulation iteration.
+	this->updateConnection = event::Events::ConnectWorldUpdateBegin(boost::bind(&ArmPlugin::OnUpdate, this, _1));
 }
 
 // CreateAgent
@@ -374,7 +374,7 @@ bool ArmPlugin::updateAgent()
 	/ TODO - Increase or decrease the joint position based on whether the action is even or odd
 	/
 	*/
-	float joint = 1.5	; // TODO - Set joint position based on whether action is even or odd.
+	float joint = 1.5; // TODO - Set joint position based on whether action is even or odd.
 
 	// limit the joint to the specified range
 	if (joint < JOINT_MIN)
