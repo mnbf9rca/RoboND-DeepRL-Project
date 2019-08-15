@@ -35,10 +35,10 @@
 /
 */
 
-#define INPUT_WIDTH 512
-#define INPUT_HEIGHT 512
+#define INPUT_WIDTH 256
+#define INPUT_HEIGHT 256
 #define OPTIMIZER "Adam"
-#define LEARNING_RATE 0.01f
+#define LEARNING_RATE 0.1f
 #define REPLAY_MEMORY 10000
 #define BATCH_SIZE 128
 #define USE_LSTM true
@@ -66,7 +66,7 @@
 #define ANIMATION_STEPS 1000
 
 // Set Debug Mode
-#define DEBUG false
+#define DEBUG true
 
 // Lock base rotation DOF (Add dof in header file if off)
 #define LOCKBASE true
