@@ -280,27 +280,24 @@ void ArmPlugin::onCollisionMsg(ConstContactsPtr &contacts)
 		if (strcmp(contacts->contact(i).collision2().c_str(), COLLISION_FILTER) == 0)
 			continue;
 
-		if (DEBUG)
+		if(true)
 		{
 			std::cout << "Collision between[" << contacts->contact(i).collision1()
 					  << "] and [" << contacts->contact(i).collision2() << "]\n";
 		}
-
 
 		/*
 		/ TODO - Check if there is collision between the arm and object, then issue learning reward
 		/
 		*/
 
-		
-		
 		if ((strcmp(contacts->contact(i).collision1().c_str(), COLLISION_ITEM) == 0) &&
-		     (strcmp(contacts->contact(i).collision2().c_str(), COLLISION_POINT) == 0))
+			(strcmp(contacts->contact(i).collision2().c_str(), COLLISION_POINT) == 0))
 		{
 			// we hit the item with the COLLISION_POINT part
 			rewardHistory = REWARD_WIN;
 
-			newReward  = true;
+			newReward = true;
 			endEpisode = true;
 
 			return;
@@ -310,12 +307,9 @@ void ArmPlugin::onCollisionMsg(ConstContactsPtr &contacts)
 			// penalise other impacts, unless also hit wiht COLLISION_POINT
 			rewardHistory = REWARD_LOSS;
 
-			newReward  = true;
+			newReward = true;
 			endEpisode = true;
 		}
-		
-		
-		
 	}
 }
 
@@ -627,15 +621,15 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 			endEpisode    = None;
 		}
 		*/
-	    bool checkGroundContact = gripBBox.min.z <= groundContact; // have we come close to ground?
+		bool checkGroundContact = gripBBox.min.z <= groundContact; // have we come close to ground?
 		if (checkGroundContact)
 		{
-						
+
 			printf("GROUND CONTACT (%f), EOE\n", gripBBox.min.z);
 
 			rewardHistory = REWARD_LOSS;
-			newReward     = true;
-			endEpisode    = true;
+			newReward = true;
+			endEpisode = true;
 		}
 
 		/*
@@ -643,30 +637,33 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 		/
 		*/
 
-		
-		if(!checkGroundContact)
+		if (!checkGroundContact)
 		{
 			const float distGoal = BoxDistance(propBBox, gripBBox); // compute the reward from distance to the goal
 
-			if(DEBUG){printf("distance('%s', '%s') = %f\n", gripper->GetName().c_str(), prop->model->GetName().c_str(), distGoal);}
-
-			
-			if( episodeFrames > 1 )
+			if (DEBUG)
 			{
-				const float distDelta  = lastGoalDistance - distGoal;
-				const float timePenalty = 1.0f - (1.0f / (maxEpisodeLength / episodeFrames )); // increasing time penalty as episode count increases
+				printf("distance('%s', '%s') = %f\n", gripper->GetName().c_str(), prop->model->GetName().c_str(), distGoal);
+			}
 
+			if (episodeFrames > 1)
+			{
+				const float distDelta = lastGoalDistance - distGoal;
+				const float timePenalty = 1.0f - (1.0f / (maxEpisodeLength / episodeFrames)); // increasing time penalty as episode count increases
 
 				// compute the smoothed moving average of the delta of the distance to the goal
-				avgGoalDelta  = (avgGoalDelta * DISTANCE_DECAY_FACTOR) + (distDelta * (1.0f - DISTANCE_DECAY_FACTOR));
+				avgGoalDelta = (avgGoalDelta * DISTANCE_DECAY_FACTOR) + (distDelta * (1.0f - DISTANCE_DECAY_FACTOR));
 				rewardHistory = avgGoalDelta * REWARD_DISTANCE * timePenalty;
 
-				newReward     = true;	
-				if(true){printf("distance('%s', '%s') = %f, r %f at %f/%f\n", gripper->GetName().c_str(), prop->model->GetName().c_str(), distGoal, rewardHistory, avgGoalDelta, timePenalty);}
+				newReward = true;
+				if (true)
+				{
+					printf("distance('%s', '%s') = %f, r %f at %f/%f\n", gripper->GetName().c_str(), prop->model->GetName().c_str(), distGoal, rewardHistory, avgGoalDelta, timePenalty);
+				}
 			}
 
 			lastGoalDistance = distGoal;
-		} 
+		}
 	}
 
 	// issue rewards and train DQN
