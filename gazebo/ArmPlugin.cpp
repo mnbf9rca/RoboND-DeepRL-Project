@@ -52,7 +52,7 @@
 #define REWARD_WIN 500.0f
 #define REWARD_LOSS -500.0f
 #define REWARD_DISTANCE_MULTIPLIER 15.0f
-#define DISTANCE_DECAY_FACTOR 0.9f
+#define DISTANCE_DECAY_FACTOR 0.99f
 
 // Define Object Names
 #define WORLD_NAME "arm_world"
