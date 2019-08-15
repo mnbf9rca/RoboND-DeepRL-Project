@@ -283,23 +283,25 @@ void ArmPlugin::onCollisionMsg(ConstContactsPtr &contacts)
 					  << "] and [" << contacts->contact(i).collision2() << "]\n";
 		}
 
+
 		/*
 		/ TODO - Check if there is collision between the arm and object, then issue learning reward
 		/
 		*/
 
-		/*
 		
-		if (collisionCheck)
+		
+		if (strcmp(contacts->contact(i).collision2().c_str(), COLLISION_POINT) == 0)
 		{
-			rewardHistory = None;
+			rewardHistory = REWARD_WIN * 10.0f;
 
-			newReward  = None;
-			endEpisode = None;
+			newReward  = true;
+			endEpisode = true;
 
 			return;
 		}
-		*/
+		
+		
 	}
 }
 
