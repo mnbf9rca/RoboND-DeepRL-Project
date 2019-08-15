@@ -51,8 +51,9 @@
 
 #define REWARD_WIN 500.0f
 #define REWARD_LOSS -500.0f
-#define REWARD_DISTANCE_MULTIPLIER 150.0f
+#define REWARD_DISTANCE 150.0f
 #define DISTANCE_DECAY_FACTOR 0.9f
+#define DISTANCE_EPISIDE_PENALTY 0.1f
 
 // Define Object Names
 #define WORLD_NAME "arm_world"
@@ -656,7 +657,7 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 
 				// compute the smoothed moving average of the delta of the distance to the goal
 				avgGoalDelta  = (avgGoalDelta * DISTANCE_DECAY_FACTOR) + (distDelta * (1.0f - DISTANCE_DECAY_FACTOR));
-				rewardHistory = avgGoalDelta * REWARD_DISTANCE_MULTIPLIER;
+				rewardHistory = avgGoalDelta * REWARD_DISTANCE - (episodeFrames * DISTANCE_EPISIDE_PENALTY);
 
 				newReward     = true;	
 				if(true){printf("distance('%s', '%s') = %f, reward %f at %f avgGoalDelta\n", gripper->GetName().c_str(), prop->model->GetName().c_str(), distGoal, rewardHistory, avgGoalDelta);}
