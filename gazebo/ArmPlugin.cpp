@@ -49,7 +49,7 @@
 /
 */
 
-#define REWARD_WIN 10000.0f
+#define REWARD_WIN 100.0f
 #define REWARD_LOSS -10.0f
 
 // Define Object Names
@@ -576,7 +576,7 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 	if (maxEpisodeLength > 0 && episodeFrames > maxEpisodeLength)
 	{
 		printf("ArmPlugin - triggering EOE, episode has exceeded %i frames\n", maxEpisodeLength);
-		rewardHistory += REWARD_LOSS;
+		rewardHistory += REWARD_LOSS * 10.0f;
 		newReward = true;
 		endEpisode = true;
 	}
@@ -625,11 +625,11 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 		if (checkGroundContact)
 		{
 						
-			printf("GROUND CONTACT\n");
+			printf("GROUND CONTACT, EOE\n");
 
-			rewardHistory += REWARD_LOSS;
+			rewardHistory = REWARD_LOSS * 100.0f;
 			newReward     = true;
-			endEpisode    = false;
+			endEpisode    = true;
 		}
 
 		/*
