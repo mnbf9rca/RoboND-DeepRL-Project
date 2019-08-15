@@ -629,7 +629,7 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 		if (checkGroundContact)
 		{
 						
-			printf("GROUND CONTACT, EOE\n");
+			printf("GROUND CONTACT (%f), EOE\n", gripBBox.min.z);
 
 			rewardHistory = REWARD_LOSS;
 			newReward     = true;
