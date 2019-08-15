@@ -624,11 +624,11 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 		if (gripBBox.min.z <= groundContact)
 		{
 						
-			printf("GROUND CONTACT, EOE\n");
+			printf("GROUND CONTACT\n");
 
-			rewardHistory = REWARD_LOSS * 20.0f;
+			rewardHistory = REWARD_LOSS * 5.0f;
 			newReward     = true;
-			endEpisode    = true;
+			endEpisode    = false;
 		}
 
 		/*
