@@ -621,7 +621,7 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 			endEpisode    = None;
 		}
 		*/
-	    bool checkGroundContact = gripBBox.min.z <= groundContact // have we come close to ground?
+	    bool checkGroundContact = gripBBox.min.z <= groundContact; // have we come close to ground?
 		if (checkGroundContact)
 		{
 						
