@@ -393,7 +393,7 @@ bool ArmPlugin::updateAgent()
 	*/
 
 	// current joint given by ref[action / 2]
-	float joint = ref[action / 2] + actionJointDelta * ((action % 2 == 0) ? 1.0f : -1.0f); // TODO - Set joint position based on whether action is even or odd.
+	float joint = ref[action / 2] + actionJointDelta * ((action % 2 == 0) ? -1.0f : 1.0f); // TODO - Set joint position based on whether action is even or odd.
 
 	// limit the joint to the specified range
 	if (joint < JOINT_MIN)
@@ -646,7 +646,7 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 		{
 			const float distGoal = BoxDistance(propBBox, gripBBox); // compute the reward from distance to the goal
 
-			if(DEBUG){printf("distance('%s', '%s') = %f\n", gripper->GetName().c_str(), prop->model->GetName().c_str(), distGoal);}
+			if(true){printf("distance('%s', '%s') = %f\n", gripper->GetName().c_str(), prop->model->GetName().c_str(), distGoal);}
 
 			
 			if( episodeFrames > 1 )
@@ -657,6 +657,7 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 				// compute the smoothed moving average of the delta of the distance to the goal
 				avgGoalDelta  = (avgGoalDelta * DISTANCE_DECAY_FACTOR) + (distDelta * (1.0f - DISTANCE_DECAY_FACTOR));
 				rewardHistory = avgGoalDelta * REWARD_DISTANCE_MULTIPLIER;
+
 				newReward     = true;	
 			}
 
