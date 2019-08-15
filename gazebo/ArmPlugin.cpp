@@ -621,6 +621,15 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 			endEpisode    = None;
 		}
 		*/
+		if (strcmp(contacts->contact(i).collision2().c_str(), COLLISION_FILTER) == 0)
+		{
+						
+			printf("GROUND CONTACT, EOE\n");
+
+			rewardHistory = REWARD_LOSS * 20.0f;
+			newReward     = true;
+			endEpisode    = true;
+		}
 
 		/*
 		/ TODO - Issue an interim reward based on the distance to the object
