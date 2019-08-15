@@ -163,6 +163,8 @@ bool ArmPlugin::createAgent()
 	/
 	*/
 	/*
+// Define DQN API Settings
+
 	#define INPUT_CHANNELS 3
 	#define ALLOW_RANDOM true
 	#define DEBUG_DQN false
@@ -170,23 +172,24 @@ bool ArmPlugin::createAgent()
 	#define EPS_START 0.9f
 	#define EPS_END 0.05f
 	#define EPS_DECAY 200
+
+
 	#define INPUT_WIDTH 512
 	#define INPUT_HEIGHT 512
-	#define INPUT_HEIGHT "None"
+	#define OPTIMIZER "None"
 	#define LEARNING_RATE 0.0f
 	#define REPLAY_MEMORY 10000
 	#define BATCH_SIZE 8
 	#define USE_LSTM false
 	#define LSTM_SIZE 32
-
 	dqnAgent* dqnAgent::Create(uint32_t width, uint32_t height, uint32_t channels, uint32_t numActions, 
 					  const char* optimizer, float learning_rate, uint32_t replay_mem, uint32_t batch_size, 
 					  float gamma, float epsilon_start,  float epsilon_end,  float epsilon_decay, 
 					  bool use_lstm, int lstm_size, bool allow_random, bool debug_mode)
 	*/
 
-	agent = dqnAgent::Create(INPUT_WIDTH, INPUT_HEIGHT, INPUT_CHANNELS, INPUT_CHANNELS,
-							 INPUT_HEIGHT, LEARNING_RATE, REPLAY_MEMORY, BATCH_SIZE,
+	agent = dqnAgent::Create(INPUT_WIDTH, INPUT_HEIGHT, INPUT_CHANNELS, DOF * 2,
+							 OPTIMIZER, LEARNING_RATE, REPLAY_MEMORY, BATCH_SIZE,
 							 GAMMA, EPS_START, EPS_END, EPS_DECAY,
 							 USE_LSTM, LSTM_SIZE, ALLOW_RANDOM, DEBUG_DQN);
 
