@@ -653,7 +653,7 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 			if( episodeFrames > 1 )
 			{
 				const float distDelta  = lastGoalDistance - distGoal;
-				const float timePenalty = (episodeFrames * DISTANCE_EPISIDE_PENALTY);
+				const float timePenalty = -(episodeFrames * DISTANCE_EPISIDE_PENALTY);
 
 
 				// compute the smoothed moving average of the delta of the distance to the goal
