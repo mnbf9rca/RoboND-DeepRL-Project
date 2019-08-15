@@ -621,7 +621,7 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 			endEpisode    = None;
 		}
 		*/
-		if (strcmp(contacts->contact(i).collision2().c_str(), COLLISION_FILTER) == 0)
+		if (gripBBox.min.z <= groundContact)
 		{
 						
 			printf("GROUND CONTACT, EOE\n");
