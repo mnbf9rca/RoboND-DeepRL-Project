@@ -646,7 +646,7 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 		{
 			const float distGoal = BoxDistance(propBBox, gripBBox); // compute the reward from distance to the goal
 
-			if(true){printf("distance('%s', '%s') = %f\n", gripper->GetName().c_str(), prop->model->GetName().c_str(), distGoal);}
+			if(DEBUG){printf("distance('%s', '%s') = %f\n", gripper->GetName().c_str(), prop->model->GetName().c_str(), distGoal);}
 
 			
 			if( episodeFrames > 1 )
@@ -659,7 +659,7 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 				rewardHistory = avgGoalDelta * REWARD_DISTANCE_MULTIPLIER;
 
 				newReward     = true;	
-				if(true){printf("distance('%s', '%s') = %f, reward %f\n", gripper->GetName().c_str(), prop->model->GetName().c_str(), distGoal, rewardHistory);}
+				if(true){printf("distance('%s', '%s') = %f, reward %f at %f avgGoalDelta\n", gripper->GetName().c_str(), prop->model->GetName().c_str(), distGoal, rewardHistory, avgGoalDelta);}
 			}
 
 			lastGoalDistance = distGoal;
