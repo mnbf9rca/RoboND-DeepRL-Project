@@ -51,7 +51,7 @@
 
 #define REWARD_WIN 500.0f
 #define REWARD_LOSS -500.0f
-#define REWARD_DISTANCE_MULTIPLIER 0.1f
+#define REWARD_DISTANCE_MULTIPLIER 15.0f
 #define DISTANCE_DECAY_FACTOR 0.9f
 
 // Define Object Names
@@ -659,6 +659,7 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 				rewardHistory = avgGoalDelta * REWARD_DISTANCE_MULTIPLIER;
 
 				newReward     = true;	
+				if(true){printf("distance('%s', '%s') = %f, reward %f\n", gripper->GetName().c_str(), prop->model->GetName().c_str(), distGoal, rewardHistory);}
 			}
 
 			lastGoalDistance = distGoal;
