@@ -293,6 +293,7 @@ void ArmPlugin::onCollisionMsg(ConstContactsPtr &contacts)
 		
 		if (strcmp(contacts->contact(i).collision2().c_str(), COLLISION_POINT) == 0)
 		{
+			// we hit the item with the COLLISION_POINT part
 			rewardHistory = REWARD_WIN * 10.0f;
 
 			newReward  = true;
@@ -300,6 +301,15 @@ void ArmPlugin::onCollisionMsg(ConstContactsPtr &contacts)
 
 			return;
 		}
+		else
+		{
+			// penalise other impacts, unless also hit wiht COLLISION_POINT
+			rewardHistory = REWARD_LOSS;
+
+			newReward  = true;
+			endEpisode = true;
+		}
+		
 		
 		
 	}
