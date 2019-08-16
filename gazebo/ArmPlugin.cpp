@@ -54,7 +54,7 @@
 #define REWARD_COLISSION_GROUND 10				   // hit the ground
 #define REWARD_COLLISION_CORRECT_PART 20		   // hit the correct item
 #define REWARD_COLLISION_WRONG_PART 10			   // hit the wrong item
-#define REWARD_ANY_COLLISION true				   // reward for hitting any part of the arm on the tube
+#define REWARD_ANY_COLLISION false				   // reward for hitting any part of the arm on the tube
 #define DISTANCE_DECAY_FACTOR 0.9f				   // smoothing factor for average distance
 #define MIN_DISTANCE_TO_MOVE_WITHOUT_PENALTY 0.05f // how far must the geripper have moved compared to last frame to avoid a penalty
 
