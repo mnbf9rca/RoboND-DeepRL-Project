@@ -52,9 +52,9 @@
 #define REWARD_WIN 0.15f
 #define REWARD_LOSS -0.15f
 #define REWARD_DISTANCE 150.0f
-#define REWARD_COLISSION_GROUND 10 // hit the ground
+#define REWARD_COLISSION_GROUND 10		 // hit the ground
 #define REWARD_COLLISION_CORRECT_PART 20 // hit the correct item
-#define REWARD_COLLISION_WRONG_PART 10 // hit the wrong item
+#define REWARD_COLLISION_WRONG_PART 10   // hit the wrong item
 
 #define DISTANCE_DECAY_FACTOR 0.9f
 #define DISTANCE_EPISIDE_PENALTY 0.1f
@@ -284,7 +284,7 @@ void ArmPlugin::onCollisionMsg(ConstContactsPtr &contacts)
 		if (strcmp(contacts->contact(i).collision2().c_str(), COLLISION_FILTER) == 0)
 			continue;
 
-		if(true)
+		if (true)
 		{
 			std::cout << "Collision between[" << contacts->contact(i).collision1()
 					  << "] and [" << contacts->contact(i).collision2() << "]\n";
@@ -296,7 +296,7 @@ void ArmPlugin::onCollisionMsg(ConstContactsPtr &contacts)
 		*/
 
 		bool collisionCheck = strcmp(contacts->contact(i).collision1().c_str(), COLLISION_ITEM) == 0;
-		if (collisionCheck)  // any collision with the arm
+		if (collisionCheck) // any collision with the arm
 		// if ((strcmp(contacts->contact(i).collision1().c_str(), COLLISION_ITEM) == 0) &&
 		// 	(strcmp(contacts->contact(i).collision2().c_str(), COLLISION_POINT) == 0)) // any collision with teh arm and gripper
 		{
@@ -304,7 +304,7 @@ void ArmPlugin::onCollisionMsg(ConstContactsPtr &contacts)
 				rewardHistory = REWARD_WIN * REWARD_COLLISION_CORRECT_PART;
 			// if another part of the arm is
 			else //we hit anything else
-				rewardHistory = REWARD_LOSS * REWARD_COLLISION_WRONG_PART; 
+				rewardHistory = REWARD_LOSS * REWARD_COLLISION_WRONG_PART;
 
 			rewardHistory = REWARD_WIN;
 
@@ -660,13 +660,14 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 			if (episodeFrames > 1)
 			{
 				const float distDelta = lastGoalDistance - distGoal;
-				const float timePenalty = ((float)maxEpisodeLength / (float)episodeFrames) / (float)maxEpisodeLength ; // decreasing time score as episode count increases
+				const float timePenalty = ((float)maxEpisodeLength / (float)episodeFrames) / (float)maxEpisodeLength; // decreasing time score as episode count increases
 
 				// compute the smoothed moving average of the delta of the distance to the goal
-				avgGoalDelta = (avgGoalDelta * DISTANCE_DECAY_FACTOR) + (distDelta * (1.0f - DISTANCE_DECAY_FACTOR) );
+				avgGoalDelta = (avgGoalDelta * DISTANCE_DECAY_FACTOR) + (distDelta * (1.0f - DISTANCE_DECAY_FACTOR));
 
 				// reward + if moving towards goal, weighted for moving earlier vs. later
-				if (distDelta > 0){
+				if (distDelta > 0)
+				{
 					rewardHistory = REWARD_WIN * timePenalty;
 				}
 				else
@@ -675,12 +676,13 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 				}
 				// sometimes it's hovering near the goal but not reaching it
 				// encourage movement at all times
-				if (math.abs(avgGoalDelta) < 0.005f){
+				if (math::abs(avgGoalDelta) < 0.005f)
+				{
 					rewardHistory += REWARD_LOSS; // deduct something unless it moved at least 0.5cm
 				}
 
 				newReward = true;
-				if(DEBUG)
+				if (DEBUG)
 				{
 					printf("episodeFrames %i, maxEpisodeLength %i, timePenalty %f, avgGoalDelta %f\n", episodeFrames, maxEpisodeLength, timePenalty, avgGoalDelta);
 					printf("distance('%s', '%s') = %f (%f), r %f \n", gripper->GetName().c_str(), prop->model->GetName().c_str(), distGoal, distDelta, rewardHistory);
