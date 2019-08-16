@@ -659,7 +659,8 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 				newReward = true;
 				if (true)
 				{
-					printf("distance('%s', '%s') = %f, r %f at %f/%f\n", gripper->GetName().c_str(), prop->model->GetName().c_str(), distGoal, rewardHistory, avgGoalDelta, timePenalty);
+					printf("episodeFrames %f, maxEpisodeLength %f, timePenalty %f, avgGoalDelta %f", episodeFrames, maxEpisodeLength, timePenalty, avgGoalDelta)
+					printf("distance('%s', '%s') = %f (%f), r %f \n", gripper->GetName().c_str(), prop->model->GetName().c_str(), distGoal, distDelta, rewardHistory);
 				}
 			}
 
