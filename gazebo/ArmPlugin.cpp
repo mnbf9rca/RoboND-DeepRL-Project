@@ -51,11 +51,12 @@
 
 #define REWARD_WIN 0.15f
 #define REWARD_LOSS -0.15f
-#define REWARD_COLISSION_GROUND 10		 // hit the ground
-#define REWARD_COLLISION_CORRECT_PART 20 // hit the correct item
-#define REWARD_COLLISION_WRONG_PART 10   // hit the wrong item
-#define REWARD_ANY_COLLISION true		 // reward for hitting any part of the arm on the tube
-#define DISTANCE_DECAY_FACTOR 0.9f		 // smoothing factor for average distance
+#define REWARD_COLISSION_GROUND 10				   // hit the ground
+#define REWARD_COLLISION_CORRECT_PART 20		   // hit the correct item
+#define REWARD_COLLISION_WRONG_PART 10			   // hit the wrong item
+#define REWARD_ANY_COLLISION true				   // reward for hitting any part of the arm on the tube
+#define DISTANCE_DECAY_FACTOR 0.9f				   // smoothing factor for average distance
+#define MIN_DISTANCE_TO_MOVE_WITHOUT_PENALTY 0.05f // how far must the geripper have moved compared to last frame to avoid a penalty
 
 // Define Object Names
 #define WORLD_NAME "arm_world"
@@ -296,7 +297,6 @@ void ArmPlugin::onCollisionMsg(ConstContactsPtr &contacts)
 
 			return;
 		}
-
 	}
 }
 
@@ -652,7 +652,7 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 				}
 				// sometimes it's hovering near the goal but not reaching it
 				// encourage movement at all times
-				if (abs(avgGoalDelta) < 0.005f)
+				if (abs(avgGoalDelta) < MIN_DISTANCE_TO_MOVE_WITHOUT_PENALTY)
 				{
 					rewardHistory += REWARD_LOSS; // deduct something unless it moved at least 0.5cm
 				}
