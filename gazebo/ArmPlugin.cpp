@@ -665,7 +665,7 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 				// compute the smoothed moving average of the delta of the distance to the goal
 				avgGoalDelta = (avgGoalDelta * DISTANCE_DECAY_FACTOR) + (distDelta * (1.0f - DISTANCE_DECAY_FACTOR) );
 
-				// reward + if moving towards goal
+				// reward + if moving towards goal, weighted for moving earlier vs. later
 				if (distDelta > 0){
 					rewardHistory = REWARD_WIN * timePenalty;
 				}
@@ -673,7 +673,11 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 				{
 					rewardHistory = REWARD_LOSS;
 				}
-				
+				// sometimes it's hovering near the goal but not reaching it
+				// encourage movement at all times
+				if (math.abs(avgGoalDelta) < 0.005f){
+					rewardHistory += REWARD_LOSS; // deduct something unless it moved at least 0.5cm
+				}
 
 				newReward = true;
 				if(DEBUG)
