@@ -650,11 +650,11 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 			if (episodeFrames > 1)
 			{
 				const float distDelta = lastGoalDistance - distGoal;
-				float timePenalty = (maxEpisodeLength / episodeFrames)/maxEpisodeLength ; // increasing time penalty as episode count increases
+				const float timePenalty = (maxEpisodeLength / episodeFrames) / maxEpisodeLength ; // decreasing time score as episode count increases
 
 				// compute the smoothed moving average of the delta of the distance to the goal
-				avgGoalDelta = (avgGoalDelta * DISTANCE_DECAY_FACTOR) + (distDelta * (1.0f - DISTANCE_DECAY_FACTOR) * timePenalty);
-				rewardHistory = avgGoalDelta * REWARD_DISTANCE;
+				avgGoalDelta = (avgGoalDelta * DISTANCE_DECAY_FACTOR) + (distDelta * (1.0f - DISTANCE_DECAY_FACTOR) );
+				rewardHistory = avgGoalDelta * REWARD_DISTANCE * timePenalty;
 
 				newReward = true;
 				if (true)
