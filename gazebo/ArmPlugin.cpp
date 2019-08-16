@@ -676,7 +676,7 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 				}
 				// sometimes it's hovering near the goal but not reaching it
 				// encourage movement at all times
-				if (math::abs(avgGoalDelta) < 0.005f)
+				if (abs(avgGoalDelta) < 0.005f)
 				{
 					rewardHistory += REWARD_LOSS; // deduct something unless it moved at least 0.5cm
 				}
