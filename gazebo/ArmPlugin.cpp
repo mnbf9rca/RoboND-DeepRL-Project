@@ -51,13 +51,11 @@
 
 #define REWARD_WIN 0.15f
 #define REWARD_LOSS -0.15f
-#define REWARD_DISTANCE 150.0f
 #define REWARD_COLISSION_GROUND 10		 // hit the ground
 #define REWARD_COLLISION_CORRECT_PART 20 // hit the correct item
 #define REWARD_COLLISION_WRONG_PART 10   // hit the wrong item
-
-#define DISTANCE_DECAY_FACTOR 0.9f
-#define DISTANCE_EPISIDE_PENALTY 0.1f
+#define REWARD_ANY_COLLISION true		 // reward for hitting any part of the arm on the tube
+#define DISTANCE_DECAY_FACTOR 0.9f		 // smoothing factor for average distance
 
 // Define Object Names
 #define WORLD_NAME "arm_world"
@@ -170,25 +168,6 @@ bool ArmPlugin::createAgent()
 	/
 	*/
 	/*
-// Define DQN API Settings
-
-	#define INPUT_CHANNELS 3
-	#define ALLOW_RANDOM true
-	#define DEBUG_DQN false
-	#define GAMMA 0.9f
-	#define EPS_START 0.9f
-	#define EPS_END 0.05f
-	#define EPS_DECAY 200
-
-
-	#define INPUT_WIDTH 512
-	#define INPUT_HEIGHT 512
-	#define OPTIMIZER "None"
-	#define LEARNING_RATE 0.0f
-	#define REPLAY_MEMORY 10000
-	#define BATCH_SIZE 8
-	#define USE_LSTM false
-	#define LSTM_SIZE 32
 	dqnAgent* dqnAgent::Create(uint32_t width, uint32_t height, uint32_t channels, uint32_t numActions, 
 					  const char* optimizer, float learning_rate, uint32_t replay_mem, uint32_t batch_size, 
 					  float gamma, float epsilon_start,  float epsilon_end,  float epsilon_decay, 
@@ -284,7 +263,7 @@ void ArmPlugin::onCollisionMsg(ConstContactsPtr &contacts)
 		if (strcmp(contacts->contact(i).collision2().c_str(), COLLISION_FILTER) == 0)
 			continue;
 
-		if (true)
+		if (DEBUG)
 		{
 			std::cout << "Collision between[" << contacts->contact(i).collision1()
 					  << "] and [" << contacts->contact(i).collision2() << "]\n";
@@ -297,28 +276,27 @@ void ArmPlugin::onCollisionMsg(ConstContactsPtr &contacts)
 
 		bool collisionCheck = strcmp(contacts->contact(i).collision1().c_str(), COLLISION_ITEM) == 0;
 		if (collisionCheck) // any collision with the arm
-		// if ((strcmp(contacts->contact(i).collision1().c_str(), COLLISION_ITEM) == 0) &&
-		// 	(strcmp(contacts->contact(i).collision2().c_str(), COLLISION_POINT) == 0)) // any collision with teh arm and gripper
+
 		{
-			if (strcmp(contacts->contact(i).collision2().c_str(), COLLISION_POINT) == 0) // we hit COLLISION_ITEM with COLLISION_POINT
+#if REWARD_ANY_COLLISION
+			rewardHistory = REWARD_WIN * REWARD_COLLISION_CORRECT_PART;
+#else
+
+			if (strcmp(contacts->contact(i).collision2().c_str(), COLLISION_POINT) == 0)
+				// we hit COLLISION_ITEM with COLLISION_POINT
 				rewardHistory = REWARD_WIN * REWARD_COLLISION_CORRECT_PART;
-			// if another part of the arm is
-			else //we hit anything else
+
+			else
+				//we hit anything else
 				rewardHistory = REWARD_LOSS * REWARD_COLLISION_WRONG_PART;
+#endif
 
 			newReward = true;
 			endEpisode = true;
 
 			return;
 		}
-		else
-		{
-			// penalise other impacts
-			rewardHistory = REWARD_LOSS;
 
-			newReward = true;
-			endEpisode = true;
-		}
 	}
 }
 
