@@ -291,8 +291,9 @@ void ArmPlugin::onCollisionMsg(ConstContactsPtr &contacts)
 		/
 		*/
 
-		if ((strcmp(contacts->contact(i).collision1().c_str(), COLLISION_ITEM) == 0) &&
-			(strcmp(contacts->contact(i).collision2().c_str(), COLLISION_POINT) == 0))
+		if (strcmp(contacts->contact(i).collision1().c_str(), COLLISION_ITEM) == 0)  // any collision with the arm
+		// if ((strcmp(contacts->contact(i).collision1().c_str(), COLLISION_ITEM) == 0) &&
+		// 	(strcmp(contacts->contact(i).collision2().c_str(), COLLISION_POINT) == 0)) // any collision with teh arm and gripper
 		{
 			// we hit the COLLISION_ITEM with the COLLISION_POINT part
 			rewardHistory = REWARD_WIN;
