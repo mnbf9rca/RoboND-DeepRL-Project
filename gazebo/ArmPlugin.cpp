@@ -40,18 +40,22 @@
 #define OPTIMIZER "Adam"
 #define LEARNING_RATE 0.1f
 #define REPLAY_MEMORY 10000
-#define BATCH_SIZE 128
+#define BATCH_SIZE 512
 #define USE_LSTM true
-#define LSTM_SIZE 32
+#define LSTM_SIZE 256
 
 /*
 / TODO - Define Reward Parameters
 /
 */
 
-#define REWARD_WIN 500.0f
-#define REWARD_LOSS -500.0f
+#define REWARD_WIN 0.15f
+#define REWARD_LOSS -0.15f
 #define REWARD_DISTANCE 150.0f
+#define REWARD_COLISSION_GROUND 10 // hit the ground
+#define REWARD_COLLISION_CORRECT_PART 20 // hit the correct item
+#define REWARD_COLLISION_WRONG_PART 10 // hit the wrong item
+
 #define DISTANCE_DECAY_FACTOR 0.9f
 #define DISTANCE_EPISIDE_PENALTY 0.1f
 
@@ -291,11 +295,17 @@ void ArmPlugin::onCollisionMsg(ConstContactsPtr &contacts)
 		/
 		*/
 
-		if (strcmp(contacts->contact(i).collision1().c_str(), COLLISION_ITEM) == 0)  // any collision with the arm
+		bool collisionCheck = strcmp(contacts->contact(i).collision1().c_str(), COLLISION_ITEM) == 0;
+		if (collisionCheck)  // any collision with the arm
 		// if ((strcmp(contacts->contact(i).collision1().c_str(), COLLISION_ITEM) == 0) &&
 		// 	(strcmp(contacts->contact(i).collision2().c_str(), COLLISION_POINT) == 0)) // any collision with teh arm and gripper
 		{
-			// we hit the COLLISION_ITEM with the COLLISION_POINT part
+			if (strcmp(contacts->contact(i).collision2().c_str(), COLLISION_POINT) == 0) // we hit COLLISION_ITEM with COLLISION_POINT
+				rewardHistory = REWARD_WIN * REWARD_COLLISION_CORRECT_PART;
+			// if another part of the arm is
+			else //we hit anything else
+				rewardHistory = REWARD_LOSS * REWARD_COLLISION_WRONG_PART; 
+
 			rewardHistory = REWARD_WIN;
 
 			newReward = true;
@@ -628,7 +638,7 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 
 			printf("GROUND CONTACT (%f), EOE\n", gripBBox.min.z);
 
-			rewardHistory = REWARD_LOSS;
+			rewardHistory = REWARD_LOSS * REWARD_COLISSION_GROUND;
 			newReward = true;
 			endEpisode = true;
 		}
@@ -654,12 +664,21 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 
 				// compute the smoothed moving average of the delta of the distance to the goal
 				avgGoalDelta = (avgGoalDelta * DISTANCE_DECAY_FACTOR) + (distDelta * (1.0f - DISTANCE_DECAY_FACTOR) );
-				rewardHistory = avgGoalDelta * REWARD_DISTANCE * timePenalty;
+
+				// reward + if moving towards goal
+				if (distDelta > 0){
+					rewardHistory = REWARD_WIN * timePenalty;
+				}
+				else
+				{
+					rewardHistory = REWARD_LOSS;
+				}
+				
 
 				newReward = true;
 				if (true)
 				{
-					printf("episodeFrames %i, maxEpisodeLength %i, timePenalty %f, avgGoalDelta %f", episodeFrames, maxEpisodeLength, timePenalty, avgGoalDelta);
+					printf("episodeFrames %i, maxEpisodeLength %i, timePenalty %f, avgGoalDelta %f\n", episodeFrames, maxEpisodeLength, timePenalty, avgGoalDelta);
 					printf("distance('%s', '%s') = %f (%f), r %f \n", gripper->GetName().c_str(), prop->model->GetName().c_str(), distGoal, distDelta, rewardHistory);
 				}
 			}
