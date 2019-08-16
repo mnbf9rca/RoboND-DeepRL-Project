@@ -294,7 +294,7 @@ void ArmPlugin::onCollisionMsg(ConstContactsPtr &contacts)
 		if ((strcmp(contacts->contact(i).collision1().c_str(), COLLISION_ITEM) == 0) &&
 			(strcmp(contacts->contact(i).collision2().c_str(), COLLISION_POINT) == 0))
 		{
-			// we hit the item with the COLLISION_POINT part
+			// we hit the COLLISION_ITEM with the COLLISION_POINT part
 			rewardHistory = REWARD_WIN;
 
 			newReward = true;
@@ -304,7 +304,7 @@ void ArmPlugin::onCollisionMsg(ConstContactsPtr &contacts)
 		}
 		else
 		{
-			// penalise other impacts, unless also hit wiht COLLISION_POINT
+			// penalise other impacts
 			rewardHistory = REWARD_LOSS;
 
 			newReward = true;
@@ -649,11 +649,11 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo &updateInfo)
 			if (episodeFrames > 1)
 			{
 				const float distDelta = lastGoalDistance - distGoal;
-				const float timePenalty = 1.0f - (1.0f / (maxEpisodeLength / episodeFrames)); // increasing time penalty as episode count increases
+				const float timePenalty = 1.0f - (episodeFrames / maxEpisodeLength); // increasing time penalty as episode count increases
 
 				// compute the smoothed moving average of the delta of the distance to the goal
-				avgGoalDelta = (avgGoalDelta * DISTANCE_DECAY_FACTOR) + (distDelta * (1.0f - DISTANCE_DECAY_FACTOR));
-				rewardHistory = avgGoalDelta * REWARD_DISTANCE * timePenalty;
+				avgGoalDelta = (avgGoalDelta * DISTANCE_DECAY_FACTOR) + (distDelta * (1.0f - DISTANCE_DECAY_FACTOR) * timePenalty);
+				rewardHistory = avgGoalDelta * REWARD_DISTANCE;
 
 				newReward = true;
 				if (true)
