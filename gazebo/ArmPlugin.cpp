@@ -306,8 +306,6 @@ void ArmPlugin::onCollisionMsg(ConstContactsPtr &contacts)
 			else //we hit anything else
 				rewardHistory = REWARD_LOSS * REWARD_COLLISION_WRONG_PART;
 
-			rewardHistory = REWARD_WIN;
-
 			newReward = true;
 			endEpisode = true;
 
